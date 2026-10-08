@@ -1,0 +1,33 @@
+<div class="card card-narrow">
+  <h2 style="margin-bottom: 20px;">{{ isEdit ? 'Editar flota' : 'Nueva flota' }}</h2>
+
+  <div *ngIf="error" class="alert-error">{{ error }}</div>
+
+  <form class="form" (ngSubmit)="guardar()" #flotaForm="ngForm">
+
+    <div class="field">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" class="input" type="text" name="nombre" [(ngModel)]="flota.nombre" required maxlength="100" placeholder="Ej. Camión TRK-205">
+    </div>
+
+    <div class="field">
+      <label for="tipo">Tipo</label>
+      <select id="tipo" class="input" name="tipo" [(ngModel)]="flota.tipo" required>
+        <option *ngFor="let t of tipos" [ngValue]="t.valor">{{ t.etiqueta }}</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="capacidad">Capacidad (máximo de órdenes activas)</label>
+      <input id="capacidad" class="input" type="number" name="capacidad" [(ngModel)]="flota.capacidad" required min="1" max="1000">
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" routerLink="/flotas">Cancelar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!flotaForm.valid || cargando">
+        {{ cargando ? 'Guardando...' : (isEdit ? 'Actualizar flota' : 'Guardar flota') }}
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -4,6 +4,7 @@
   <nav class="nav-links">
     <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
     <a routerLink="/ordenes" routerLinkActive="active">Órdenes</a>
+    <a *ngIf="auth.hasRole('admin')" routerLink="/flotas" routerLinkActive="active">Flotas</a>
   </nav>
 
   <div class="nav-user">
@@ -15,3 +16,5 @@
 <main class="container">
   <router-outlet></router-outlet>
 </main>
+
+<app-toast></app-toast>

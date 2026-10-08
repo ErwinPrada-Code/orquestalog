@@ -4,6 +4,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 EstadoOrden = Literal["pendiente", "en_proceso", "completada"]
+TipoFlota = Literal["camion", "furgoneta", "moto"]
 
 
 # --- AUTENTICACIÓN ---
@@ -67,6 +68,18 @@ class FlotaResponse(BaseModel):
     tipo: str
     capacidad: int
     model_config = ConfigDict(from_attributes=True)
+
+
+class FlotaCreate(BaseModel):
+    nombre: str = Field(min_length=1, max_length=100)
+    tipo: TipoFlota
+    capacidad: int = Field(ge=1, le=1000)
+
+
+class FlotaUpdate(BaseModel):
+    nombre: Optional[str] = Field(default=None, min_length=1, max_length=100)
+    tipo: Optional[TipoFlota] = None
+    capacidad: Optional[int] = Field(default=None, ge=1, le=1000)
 
 
 class RutaResponse(BaseModel):

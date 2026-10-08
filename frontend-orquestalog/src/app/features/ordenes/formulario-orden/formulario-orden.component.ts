@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { OrdenService } from '../../../core/services/orden.service';
 import { CatalogoService } from '../../../core/services/catalogo.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Orden, OrdenPayload } from '../../../core/models/orden';
 import { Centro, Flota, Ruta } from '../../../core/models/catalogos';
 
@@ -38,6 +39,7 @@ export class FormularioOrdenComponent implements OnInit {
 
   private ordenService = inject(OrdenService);
   private catalogoService = inject(CatalogoService);
+  private toast = inject(ToastService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
@@ -107,7 +109,10 @@ export class FormularioOrdenComponent implements OnInit {
         : this.ordenService.createOrden(payload);
 
     peticion.subscribe({
-      next: () => this.router.navigate(['/ordenes']),
+      next: () => {
+        this.toast.exito(this.isEdit ? 'Orden actualizada correctamente.' : 'Orden creada correctamente.');
+        this.router.navigate(['/ordenes']);
+      },
       error: (err) => {
         const detalle = err.error?.detail;
         this.error =
@@ -115,6 +120,7 @@ export class FormularioOrdenComponent implements OnInit {
             ? detalle
             : 'No se pudo guardar la orden. Revisa los datos ingresados.';
         this.cargando = false;
+        this.cdr.detectChanges();
       },
     });
   }

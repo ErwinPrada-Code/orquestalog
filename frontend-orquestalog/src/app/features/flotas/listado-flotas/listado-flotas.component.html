@@ -1,0 +1,40 @@
+<div class="page-header">
+  <h2>Flotas</h2>
+  <div class="toolbar">
+    <button type="button" class="btn btn-primary" routerLink="/flotas/nueva">+ Nueva flota</button>
+  </div>
+</div>
+
+<div class="card">
+  <div *ngIf="cargando" class="state">Cargando flotas...</div>
+  <div *ngIf="error" class="alert-error">{{ error }}</div>
+
+  <div *ngIf="!cargando && !error" class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Capacidad</th>
+          <th class="actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of flotas">
+          <td class="id">#{{ f.id }}</td>
+          <td>{{ f.nombre }}</td>
+          <td>{{ f.tipo }}</td>
+          <td>{{ f.capacidad }}</td>
+          <td class="actions">
+            <button type="button" class="btn btn-ghost btn-sm" [routerLink]="['/flotas/editar', f.id]">Editar</button>
+            <button type="button" class="btn btn-danger-text btn-sm" (click)="eliminar(f)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="flotas.length === 0">
+          <td colspan="5" class="state">No hay flotas registradas.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

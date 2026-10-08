@@ -23,10 +23,18 @@
     <div class="detail-group">
       <h3>Datos logísticos</h3>
       <dl class="detail-list">
-        <div class="detail-row"><dt>Empresa (ID)</dt><dd>{{ orden.empresa_id }}</dd></div>
-        <div class="detail-row"><dt>Centro de distribución (ID)</dt><dd>{{ orden.centro_distribucion_id }}</dd></div>
-        <div class="detail-row"><dt>Flota asignada (ID)</dt><dd>{{ orden.flota_id }}</dd></div>
-        <div class="detail-row"><dt>Ruta (ID)</dt><dd>{{ orden.ruta_id }}</dd></div>
+        <div class="detail-row">
+          <dt>Centro de distribución</dt>
+          <dd>{{ centro ? centro.nombre : 'ID ' + orden.centro_distribucion_id }}</dd>
+        </div>
+        <div class="detail-row">
+          <dt>Flota asignada</dt>
+          <dd>{{ flota ? flota.nombre + ' (capacidad ' + flota.capacidad + ')' : 'ID ' + orden.flota_id }}</dd>
+        </div>
+        <div class="detail-row">
+          <dt>Ruta</dt>
+          <dd>{{ ruta ? ruta.origen + ' → ' + ruta.destino : 'ID ' + orden.ruta_id }}</dd>
+        </div>
       </dl>
     </div>
   </div>

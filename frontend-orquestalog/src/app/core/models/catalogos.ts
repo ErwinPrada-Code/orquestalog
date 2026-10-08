@@ -11,6 +11,8 @@ export interface Flota {
   capacidad: number;
 }
 
+export type FlotaPayload = Omit<Flota, 'id'>;
+
 export interface Ruta {
   id: number;
   origen: string;

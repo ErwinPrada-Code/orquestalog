@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "super_secret_key_jwt_orquestalog_2026"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 día
+    DB_ECHO: bool = False  # True muestra todo el SQL en consola (solo para depurar)
 
     class Config:
         env_file = ".env"

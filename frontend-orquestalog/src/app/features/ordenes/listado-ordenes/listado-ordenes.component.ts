@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { OrdenService } from '../../../core/services/orden.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Orden } from '../../../core/models/orden';
 
 @Component({
@@ -21,6 +22,7 @@ export class ListadoOrdenesComponent implements OnInit {
 
   readonly auth = inject(AuthService);
   private ordenService = inject(OrdenService);
+  private toast = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
@@ -60,9 +62,10 @@ export class ListadoOrdenesComponent implements OnInit {
       this.ordenService.deleteOrden(id).subscribe({
         next: () => {
           this.ordenes = this.ordenes.filter(o => o.id !== id);
+          this.toast.exito(`Orden #${id} eliminada correctamente.`);
           this.cdr.detectChanges();
         },
-        error: (err) => alert(err.error?.detail ?? 'No se pudo eliminar la orden.')
+        error: (err) => this.toast.error(err.error?.detail ?? 'No se pudo eliminar la orden.')
       });
     }
   }

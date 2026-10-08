@@ -41,6 +41,12 @@ sudo -u postgres psql -c "CREATE DATABASE orquestalog;"
 
 Por defecto se usa el usuario `postgres` con contraseña `postgres`. Si es distinto, ajústalo en el `.env`.
 
+**Alternativa con Docker** (no hace falta instalar PostgreSQL; crea la base `orquestalog` automáticamente):
+
+```bash
+docker compose up -d db
+```
+
 ### 2. Backend (puerto 8000)
 
 Ejecutar siempre desde la raíz del proyecto:
@@ -81,6 +87,7 @@ Abrir http://localhost:4200. La URL de la API se configura en `frontend-orquesta
 | Ver órdenes, dashboard y catálogos | ✅ | ✅ | ✅ |
 | Crear y editar órdenes | ✅ | ✅ | ❌ |
 | Eliminar órdenes | ✅ | ❌ | ❌ |
+| Gestionar flotas (crear, editar, eliminar) | ✅ | ❌ | ❌ |
 
 Los permisos se validan en el backend (respuesta 403) y se reflejan en la interfaz.
 
@@ -96,14 +103,27 @@ Los permisos se validan en el backend (respuesta 403) y se reflejan en la interf
 | PUT | `/api/v1/ordenes/{id}` | Actualizar orden |
 | DELETE | `/api/v1/ordenes/{id}` | Eliminar orden |
 | GET | `/api/v1/centros`, `/flotas`, `/rutas` | Catálogos para el formulario |
+| GET / POST / PUT / DELETE | `/api/v1/flotas` y `/api/v1/flotas/{id}` | CRUD de flotas (escritura solo administrador) |
 
 ## Reglas de negocio
 
 - **Aislamiento por empresa:** la empresa se toma del token JWT; cada usuario solo ve y modifica datos de su empresa.
 - **Capacidad de flota:** una flota no puede tener más órdenes activas (`pendiente` o `en_proceso`) que su capacidad. Se valida al crear y al editar; una orden `completada` no consume capacidad.
 - El centro, la ruta y la flota de una orden deben pertenecer a la misma empresa del usuario.
+- **Capacidad al editar flotas:** no se puede reducir la capacidad de una flota por debajo de su número de órdenes activas.
+- **Integridad al eliminar flotas:** no se puede eliminar una flota que tenga órdenes asociadas (respuesta 409).
 
-## Pruebas del frontend
+## Pruebas
+
+Backend (desde la raíz, con el entorno virtual activo; no requiere PostgreSQL):
+
+```bash
+python -m pytest
+```
+
+Cubren: hashing, JWT (inválido y vencido), respuestas 401 y 403 por rol, y las reglas de capacidad de flota.
+
+Frontend:
 
 ```bash
 cd frontend-orquestalog
