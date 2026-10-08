@@ -1,0 +1,61 @@
+<div style="background-color: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  
+  <!-- Cabecera y botón de nueva orden -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="margin: 0; color: #333;">Gestión de Órdenes</h2>
+    <div>
+      <input type="text" placeholder="🔍 Buscar orden..." style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; margin-right: 10px;">
+      <button routerLink="/ordenes/nueva" style="background-color: #000; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        + Nueva Orden
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado de Carga -->
+  <div *ngIf="cargando" style="text-align: center; padding: 20px; color: #666;">
+    Cargando órdenes desde la API...
+  </div>
+
+  <!-- Tabla de Datos -->
+  <table *ngIf="!cargando" style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+      <tr style="border-bottom: 2px solid #eee;">
+        <th style="padding: 12px; color: #666;">ID</th>
+        <th style="padding: 12px; color: #666;">Descripción</th>
+        <th style="padding: 12px; color: #666;">Fecha</th>
+        <th style="padding: 12px; color: #666;">Estado</th>
+        <th style="padding: 12px; color: #666; text-align: right;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Iterar sobre las órdenes que vienen de PostgreSQL -->
+      <tr *ngFor="let orden of ordenes" style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px; font-weight: bold;">#{{ orden.id }}</td>
+        <td style="padding: 12px;">{{ orden.descripcion }}</td>
+        <td style="padding: 12px; color: #666;">{{ orden.fecha_creacion | date:'shortDate' }}</td>
+        <td style="padding: 12px;">
+          <!-- Badges de estado dinámicos -->
+          <span [ngStyle]="{
+            'background-color': orden.estado === 'pendiente' ? '#fef08a' : (orden.estado === 'completada' ? '#bbf7d0' : '#e5e7eb'),
+            'color': orden.estado === 'pendiente' ? '#854d0e' : (orden.estado === 'completada' ? '#166534' : '#374151'),
+            'padding': '4px 8px', 'border-radius': '12px', 'font-size': '12px', 'font-weight': 'bold'
+          }">
+            {{ orden.estado | uppercase }}
+          </span>
+        </td>
+        <td style="padding: 12px; text-align: right;">
+          <button [routerLink]="['/ordenes/detalle', orden.id]" style="background: none; border: none; cursor: pointer; margin-right: 10px;" title="Ver Detalle">👁️</button>
+          <button [routerLink]="['/ordenes/editar', orden.id]" style="background: none; border: none; cursor: pointer; margin-right: 10px;" title="Editar">✏️</button>
+          <button (click)="eliminarOrden(orden.id)" style="background: none; border: none; cursor: pointer; color: red;" title="Eliminar">🗑️</button>
+        </td>
+      </tr>
+      
+      <!-- Mensaje si la base de datos está vacía -->
+      <tr *ngIf="ordenes.length === 0">
+        <td colspan="5" style="text-align: center; padding: 20px; color: #999;">
+          No hay órdenes registradas. Crea la primera.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

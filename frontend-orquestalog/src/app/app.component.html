@@ -1,0 +1,20 @@
+<!-- Barra de Navegación -->
+<nav *ngIf="router.url !== '/login'" style="background-color: #1a1a1a; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; font-family: sans-serif;">
+  <h2 style="margin: 0; color: #4ade80;">📦 OrquestaLog</h2>
+
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <span style="background-color: #333; padding: 5px 12px; border-radius: 6px; font-size: 14px;">
+      👤 Rol: Administrador
+    </span>
+    <!-- Nuevos enlaces de navegación -->
+    <a routerLink="/dashboard" style="color: white; text-decoration: none; font-weight: bold;">📊 Dashboard</a>
+    <a routerLink="/ordenes" style="color: white; text-decoration: none; font-weight: bold;">📦 Órdenes</a>
+
+    <button (click)="cerrarSesion()" style="background-color: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Salir</button>
+  </div>
+</nav>
+
+<!-- El resto de la app -->
+<main style="padding: 20px; font-family: sans-serif; background-color: #f9fafb; min-height: 100vh;">
+  <router-outlet></router-outlet>
+</main>

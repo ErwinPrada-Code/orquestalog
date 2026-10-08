@@ -1,0 +1,11 @@
+# Entornos virtuales y caché de Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Node y Angular (por si acaso, aunque Angular ya trae el suyo)
+node_modules/
+dist/
+.angular/
+EOF

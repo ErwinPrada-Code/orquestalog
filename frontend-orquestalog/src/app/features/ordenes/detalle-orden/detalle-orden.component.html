@@ -1,0 +1,40 @@
+<div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+    <h2 style="margin: 0; color: #333;">Detalle de Orden #{{ orden?.id }}</h2>
+    <span *ngIf="orden" [ngStyle]="{
+      'background-color': orden.estado === 'pendiente' ? '#fef08a' : (orden.estado === 'completada' ? '#bbf7d0' : '#e5e7eb'),
+      'color': orden.estado === 'pendiente' ? '#854d0e' : (orden.estado === 'completada' ? '#166534' : '#374151'),
+      'padding': '6px 12px', 'border-radius': '12px', 'font-size': '14px', 'font-weight': 'bold'
+    }">
+      {{ orden.estado | uppercase }}
+    </span>
+  </div>
+
+  <div *ngIf="cargando" style="text-align: center; color: #666; padding: 20px;">
+    Cargando información...
+  </div>
+
+  <div *ngIf="error" style="color: red; text-align: center; padding: 20px;">
+    {{ error }}
+  </div>
+
+  <div *ngIf="orden && !cargando" style="display: flex; flex-direction: column; gap: 15px; font-size: 16px;">
+    <div><strong>Descripción:</strong> <span style="color: #555;">{{ orden.descripcion }}</span></div>
+    <div><strong>Fecha de Creación:</strong> <span style="color: #555;">{{ orden.fecha_creacion | date:'medium' }}</span></div>
+
+    <div style="background-color: #f9fafb; padding: 15px; border-radius: 6px; margin-top: 10px;">
+      <h3 style="margin-top: 0; font-size: 16px; color: #333;">Datos Logísticos</h3>
+      <div style="margin-bottom: 8px;"><strong>ID Empresa:</strong> {{ orden.empresa_id }}</div>
+      <div style="margin-bottom: 8px;"><strong>Centro de Distribución (ID):</strong> {{ orden.centro_distribucion_id }}</div>
+      <div style="margin-bottom: 8px;"><strong>Flota Asignada (ID):</strong> {{ orden.flota_id }}</div>
+      <div><strong>Ruta a seguir (ID):</strong> {{ orden.ruta_id }}</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; text-align: right;">
+    <button routerLink="/ordenes" style="background-color: #e5e7eb; color: #333; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+      ⬅️ Volver al Listado
+    </button>
+  </div>
+</div>
