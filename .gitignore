@@ -4,8 +4,15 @@ venv/
 __pycache__/
 *.pyc
 
-# Node y Angular (por si acaso, aunque Angular ya trae el suyo)
+# Variables de entorno (secretos). Se versiona solo .env.example
+.env
+
+# Node y Angular
 node_modules/
 dist/
 .angular/
-EOF
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
