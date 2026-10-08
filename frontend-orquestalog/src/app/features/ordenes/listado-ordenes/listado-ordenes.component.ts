@@ -1,24 +1,40 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { OrdenService } from '../../../core/services/orden.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Orden } from '../../../core/models/orden';
 
 @Component({
   selector: 'app-listado-ordenes',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './listado-ordenes.component.html',
   styleUrls: ['./listado-ordenes.component.css']
 })
 export class ListadoOrdenesComponent implements OnInit {
   ordenes: Orden[] = [];
   cargando = true;
+  error = '';
+  busqueda = '';
+
+  readonly auth = inject(AuthService);
   private ordenService = inject(OrdenService);
-  private cdr = inject(ChangeDetectorRef); // <-- Fuerza el redibujado de la pantalla
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.cargarOrdenes();
+  }
+
+  get ordenesFiltradas(): Orden[] {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) return this.ordenes;
+    return this.ordenes.filter(o =>
+      String(o.id).includes(termino) ||
+      o.descripcion.toLowerCase().includes(termino) ||
+      o.estado.toLowerCase().includes(termino)
+    );
   }
 
   cargarOrdenes(): void {
@@ -26,10 +42,11 @@ export class ListadoOrdenesComponent implements OnInit {
       next: (data) => {
         this.ordenes = data;
         this.cargando = false;
-        this.cdr.detectChanges(); // <-- Obliga a Angular a quitar el "Cargando..." y mostrar la tabla
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al cargar órdenes:', err);
+        this.error = 'No se pudieron cargar las órdenes.';
         this.cargando = false;
         this.cdr.detectChanges();
       }
@@ -38,14 +55,14 @@ export class ListadoOrdenesComponent implements OnInit {
 
   eliminarOrden(id: number | undefined): void {
     if (!id) return;
-    
+
     if (confirm('¿Estás seguro de que deseas eliminar esta orden?')) {
       this.ordenService.deleteOrden(id).subscribe({
         next: () => {
           this.ordenes = this.ordenes.filter(o => o.id !== id);
-          this.cdr.detectChanges(); // <-- Actualiza la vista inmediatamente al borrar
+          this.cdr.detectChanges();
         },
-        error: (err) => console.error('Error al eliminar:', err)
+        error: (err) => alert(err.error?.detail ?? 'No se pudo eliminar la orden.')
       });
     }
   }

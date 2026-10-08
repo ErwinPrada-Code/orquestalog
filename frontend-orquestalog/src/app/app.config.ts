@@ -1,12 +1,14 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { routes } from './app.routes';
-import { provideHttpClient, withXhr } from '@angular/common/http'; // <- Importante para la API
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withXhr()) // <- Backend XHR: zone.js parchea XMLHttpRequest y el change detection corre solo
-  ]
+    // withXhr(): zone.js parchea XMLHttpRequest, no fetch. No quitar.
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
+  ],
 };

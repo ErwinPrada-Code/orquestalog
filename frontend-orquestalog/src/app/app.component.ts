@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,20 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  router = inject(Router);
+  auth = inject(AuthService);
+
+  private readonly roles: Record<string, string> = {
+    admin: 'Administrador',
+    gestor: 'Gestor logístico',
+    conductor: 'Conductor'
+  };
+
+  etiquetaRol(): string {
+    const rol = this.auth.getPayload()?.rol ?? '';
+    return this.roles[rol] ?? rol;
+  }
 
   cerrarSesion() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    this.auth.logout();
   }
 }

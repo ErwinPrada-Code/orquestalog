@@ -19,18 +19,21 @@ export class DetalleOrdenComponent implements OnInit {
   private ordenService = inject(OrdenService);
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.ordenService.getOrden(Number(id)).subscribe({
-        next: (data) => {
-          this.orden = data;
-          this.cargando = false;
-        },
-        error: (err) => {
-          this.error = 'No se pudo cargar la orden.';
-          this.cargando = false;
-        }
-      });
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (!id) {
+      this.error = 'Identificador de orden inválido.';
+      this.cargando = false;
+      return;
     }
+    this.ordenService.getOrden(id).subscribe({
+      next: (data) => {
+        this.orden = data;
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = err.status === 404 ? 'La orden no existe.' : 'No se pudo cargar la orden.';
+        this.cargando = false;
+      }
+    });
   }
 }

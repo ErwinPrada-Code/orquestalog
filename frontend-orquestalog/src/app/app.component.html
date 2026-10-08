@@ -1,20 +1,17 @@
-<!-- Barra de Navegación -->
-<nav *ngIf="router.url !== '/login'" style="background-color: #1a1a1a; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; font-family: sans-serif;">
-  <h2 style="margin: 0; color: #4ade80;">📦 OrquestaLog</h2>
+<header class="app-nav" *ngIf="auth.isLoggedIn()">
+  <a class="brand" routerLink="/dashboard">OrquestaLog</a>
 
-  <div style="display: flex; align-items: center; gap: 20px;">
-    <span style="background-color: #333; padding: 5px 12px; border-radius: 6px; font-size: 14px;">
-      👤 Rol: Administrador
-    </span>
-    <!-- Nuevos enlaces de navegación -->
-    <a routerLink="/dashboard" style="color: white; text-decoration: none; font-weight: bold;">📊 Dashboard</a>
-    <a routerLink="/ordenes" style="color: white; text-decoration: none; font-weight: bold;">📦 Órdenes</a>
+  <nav class="nav-links">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/ordenes" routerLinkActive="active">Órdenes</a>
+  </nav>
 
-    <button (click)="cerrarSesion()" style="background-color: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Salir</button>
+  <div class="nav-user">
+    <span class="user-chip">{{ auth.getPayload()?.nombre }} · {{ etiquetaRol() }}</span>
+    <button type="button" class="btn btn-secondary btn-sm" (click)="cerrarSesion()">Salir</button>
   </div>
-</nav>
+</header>
 
-<!-- El resto de la app -->
-<main style="padding: 20px; font-family: sans-serif; background-color: #f9fafb; min-height: 100vh;">
+<main class="container">
   <router-outlet></router-outlet>
 </main>

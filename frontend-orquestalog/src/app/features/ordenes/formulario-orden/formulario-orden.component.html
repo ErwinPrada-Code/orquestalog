@@ -1,47 +1,49 @@
-<div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto;">
-  <h2 style="margin-top: 0; color: #333;">{{ isEdit ? 'Editar Orden' : 'Crear Nueva Orden' }}</h2>
-  
-  <!-- Formulario de Angular (Template-driven) -->
-  <form (ngSubmit)="guardarOrden()" #ordenForm="ngForm" style="display: flex; flex-direction: column; gap: 15px;">
-    
-    <div>
-      <label style="font-weight: bold; display: block; margin-bottom: 5px;">Descripción de la carga</label>
-      <input type="text" name="descripcion" [(ngModel)]="orden.descripcion" required placeholder="Ej. Lote de monitores" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box;">
+<div class="card card-narrow">
+  <h2 style="margin-bottom: 20px;">{{ isEdit ? 'Editar orden' : 'Nueva orden' }}</h2>
+
+  <div *ngIf="error" class="alert-error">{{ error }}</div>
+
+  <form class="form" (ngSubmit)="guardarOrden()" #ordenForm="ngForm">
+
+    <div class="field">
+      <label for="descripcion">Descripción de la carga</label>
+      <input id="descripcion" class="input" type="text" name="descripcion" [(ngModel)]="orden.descripcion" required maxlength="255" placeholder="Ej. Lote de monitores">
     </div>
 
-    <div>
-      <label style="font-weight: bold; display: block; margin-bottom: 5px;">Centro de Distribución</label>
-      <select name="centro_distribucion_id" [(ngModel)]="orden.centro_distribucion_id" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
-        <option [ngValue]="1">Centro Principal Norte</option>
-        <option [ngValue]="2">Almacén Regional Sur</option>
+    <div class="field">
+      <label for="centro">Centro de distribución</label>
+      <select id="centro" class="input" name="centro_distribucion_id" [(ngModel)]="orden.centro_distribucion_id" required>
+        <option *ngFor="let c of centros" [ngValue]="c.id">{{ c.nombre }}</option>
       </select>
     </div>
 
-    <div>
-      <label style="font-weight: bold; display: block; margin-bottom: 5px;">Flota / Vehículo Asignado</label>
-      <select name="flota_id" [(ngModel)]="orden.flota_id" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
-        <option [ngValue]="1">Camión TRK-104 (Capacidad alta)</option>
-        <option [ngValue]="2">Furgoneta VAN-332 (Capacidad media)</option>
+    <div class="field">
+      <label for="flota">Flota / vehículo asignado</label>
+      <select id="flota" class="input" name="flota_id" [(ngModel)]="orden.flota_id" required>
+        <option *ngFor="let f of flotas" [ngValue]="f.id">{{ f.nombre }} (capacidad {{ f.capacidad }})</option>
       </select>
     </div>
 
-    <div>
-      <label style="font-weight: bold; display: block; margin-bottom: 5px;">Ruta a Seguir</label>
-      <select name="ruta_id" [(ngModel)]="orden.ruta_id" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
-        <option [ngValue]="1">Ruta 1 (Centro - Norte)</option>
-        <option [ngValue]="2">Ruta 2 (Centro - Occidente)</option>
+    <div class="field">
+      <label for="ruta">Ruta a seguir</label>
+      <select id="ruta" class="input" name="ruta_id" [(ngModel)]="orden.ruta_id" required>
+        <option *ngFor="let r of rutas" [ngValue]="r.id">{{ r.origen }} → {{ r.destino }}</option>
       </select>
     </div>
 
-    <!-- Botones de Acción -->
-    <div style="display: flex; gap: 10px; margin-top: 20px;">
-      <button type="submit" [disabled]="!ordenForm.valid || cargando" style="background-color: #000; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">
-        {{ cargando ? 'Guardando...' : (isEdit ? 'Actualizar Orden' : 'Guardar Orden') }}
+    <div class="field" *ngIf="isEdit">
+      <label for="estado">Estado</label>
+      <select id="estado" class="input" name="estado" [(ngModel)]="orden.estado" required>
+        <option *ngFor="let e of estados" [ngValue]="e.valor">{{ e.etiqueta }}</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" routerLink="/ordenes">Cancelar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!ordenForm.valid || cargando">
+        {{ cargando ? 'Guardando...' : (isEdit ? 'Actualizar orden' : 'Guardar orden') }}
       </button>
-      <button type="button" routerLink="/ordenes" style="background-color: #e5e7eb; color: #333; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">
-        Cancelar
-      </button>
     </div>
-    
+
   </form>
 </div>

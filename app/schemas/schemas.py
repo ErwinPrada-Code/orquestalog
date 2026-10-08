@@ -1,29 +1,76 @@
-from pydantic import BaseModel, ConfigDict
-from typing import Optional
 from datetime import datetime
+from typing import Literal, Optional
 
-# --- ESQUEMAS PARA ÓRDENES ---
+from pydantic import BaseModel, ConfigDict, Field
+
+EstadoOrden = Literal["pendiente", "en_proceso", "completada"]
+
+
+# --- AUTENTICACIÓN ---
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+# --- ÓRDENES ---
 class OrdenBase(BaseModel):
-    descripcion: str
-    estado: str = "pendiente"
+    descripcion: str = Field(min_length=1, max_length=255)
+    estado: EstadoOrden = "pendiente"
     centro_distribucion_id: int
     flota_id: int
     ruta_id: int
-    empresa_id: int
+
 
 class OrdenCreate(OrdenBase):
     pass
 
+
 class OrdenUpdate(BaseModel):
-    descripcion: Optional[str] = None
-    estado: Optional[str] = None
+    descripcion: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    estado: Optional[EstadoOrden] = None
     centro_distribucion_id: Optional[int] = None
     flota_id: Optional[int] = None
     ruta_id: Optional[int] = None
 
+
 class OrdenResponse(OrdenBase):
     id: int
+    empresa_id: int
     fecha_creacion: datetime
-    
-    # Esto permite traducir de SQLAlchemy a JSON automáticamente
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ResumenOrdenes(BaseModel):
+    total: int
+    pendientes: int
+    en_proceso: int
+    completadas: int
+
+
+# --- CATÁLOGOS ---
+class CentroResponse(BaseModel):
+    id: int
+    nombre: str
+    direccion: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class FlotaResponse(BaseModel):
+    id: int
+    nombre: str
+    tipo: str
+    capacidad: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class RutaResponse(BaseModel):
+    id: int
+    origen: str
+    destino: str
     model_config = ConfigDict(from_attributes=True)
