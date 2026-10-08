@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { OrdenService } from '../../core/services/orden.service';
@@ -7,7 +7,7 @@ import { OrdenService } from '../../core/services/orden.service';
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './dashboard.component.html'
+  templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
   cargando = true;
@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   completadas = 0;
 
   private ordenService = inject(OrdenService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.ordenService.getResumen().subscribe({
@@ -28,12 +29,14 @@ export class DashboardComponent implements OnInit {
         this.enCurso = r.en_proceso;
         this.completadas = r.completadas;
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error cargando dashboard:', err);
         this.error = 'No se pudieron cargar las métricas.';
         this.cargando = false;
-      }
+        this.cdr.detectChanges();
+      },
     });
   }
 
